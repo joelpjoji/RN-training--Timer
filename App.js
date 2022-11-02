@@ -1,117 +1,118 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+/* eslint-disable react-native/no-inline-styles */
+import React, {useEffect, useState} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 
-import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+const App = () => {
+  const [Time, setTime] = useState(0);
+  const [running, setRunning] = useState(false);
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+  useEffect(() => {
+    let interval;
+    if (running) {
+      interval = setInterval(() => {
+        setTime(prevTime => prevTime - 10);
+      }, 10);
+    }else if (!running || Time === 0) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [running]);
 
-/* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
- * LTI update could not be added via codemod */
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View>
+      <View
+        style={{
+          flexDirection: 'column',
+          justifyContent: 'space-around',
+          marginTop: 180,
+        }}>
+        <TouchableOpacity
+          style={styles.Button}
+          onPress={() => {
+            setTime(Time + 60000);
+          }}>
+          <Text style={styles.ButtonText}>+</Text>
+        </TouchableOpacity>
+        <Text style={styles.Miner}>
+          {('' + Math.floor((Time / 60000) % 60)).slice(-2)}:
+          {('' + Math.floor((Time / 1000) % 60)).slice(-2)}
+        </Text>
+        <TouchableOpacity
+          style={styles.Button}
+          onPress={() => {
+            setTime(Time - 1);
+          }}>
+          <Text style={styles.ButtonText}>-</Text>
+        </TouchableOpacity>
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+          marginTop: 20,
+        }}>
+        <TouchableOpacity
+          style={styles.Button1}
+          onPress={() => {
+            setRunning(true);
+          }}>
+          <Text style={styles.ButtonText1}>Start</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.Button1}
+          onPress={() => {
+            setRunning(false);
+            setTime(0);
+          }}>
+          <Text style={styles.ButtonText1}>Reset</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
-
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  Miner: {
+    textAlign: 'center',
+    fontSize: 40,
+    color: '#000',
+    fontWeight: 'bold',
+    alignItems: 'center', //Centered vertically
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  Button: {
+    alignItems: 'center', //Centered vertically
+    elevation: 8,
+    backgroundColor: '#009688',
+    borderRadius: 20,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    marginStart: 90,
+    marginEnd: 90,
+    margin: 20,
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  ButtonText: {
+    textAlign: 'center',
+    width: 60,
+    fontSize: 50,
+    color: '#fff',
+    fontWeight: 'bold',
   },
-  highlight: {
-    fontWeight: '700',
+  Button1: {
+    alignItems: 'center', //Centered vertically
+    elevation: 8,
+    marginStart: 20,
+    marginEnd: 20,
+    marginTop: 30,
+    backgroundColor: '#009688',
+    borderRadius: 20,
+    paddingVertical: 12,
+  },
+  ButtonText1: {
+    alignItems: 'center', //Centered vertically
+    width: 100,
+    fontSize: 20,
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
-
 export default App;
